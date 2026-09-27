@@ -39,3 +39,45 @@ test('la ortografía de Fa mayor usa Si bemol y la de Do sostenido mayor usa Mi 
 test('las entradas inválidas se rechazan sin crear acordes', () => {
   for (const id of ['99-major', '-1-major', '0-unknown', 'hello', '<script>']) assert.throws(() => music.fromId(id));
 });
+
+test('Do con capo 2 suena Re y conserva la forma y las cuerdas silenciadas', () => {
+  const shape=music.fromId('0-major');
+  const sounding=music.withCapo(shape,2);
+  assert.equal(music.chordName(sounding,'english'),'D');
+  assert.deepEqual(sounding.frets,[-1,5,4,2,3,2]);
+  assert.deepEqual(sounding.pcs,[2,6,9]);
+  assert.deepEqual(shape.frets,[-1,3,2,0,1,0]);
+  assert.equal(sounding.shapeId,'0-major');
+});
+
+test('el capotraste sube todas las voces de cada acorde el mismo número de semitonos', () => {
+  for(let root=0;root<12;root++) for(const quality of Object.keys(music.qualities)) {
+    const base=music.chord(root,quality);
+    for(let capo=0;capo<=9;capo++) {
+      const c=music.withCapo(base,capo);
+      c.frets.forEach((f,i)=>{
+        if(base.frets[i]<0)assert.equal(f,-1);
+        else {
+          assert.equal(f-base.frets[i],capo);
+          assert(c.pcs.includes((music.tuning[5-i]+f)%12));
+          assert(f<=24);
+        }
+      });
+      if(base.barre)assert.equal(c.barre.fret,base.barre.fret+capo);
+    }
+  }
+  for(const invalid of [-1,10,2.5,NaN,'2'])assert.throws(()=>music.withCapo(music.fromId('0-major'),invalid));
+});
+
+test('los ocho patrones tienen acordes válidos, duraciones coherentes y dos referencias', () => {
+  const patterns=require('../dist/progressions.js');
+  assert.equal(Object.keys(patterns).length,8);
+  for(const p of Object.values(patterns)) {
+    p.ids.forEach(id=>assert.doesNotThrow(()=>music.fromId(id)));
+    assert.equal(p.songs.length,2);
+    p.songs.forEach(song=>assert.equal(new URL(song.url).protocol,'https:'));
+    if(p.beats){assert.equal(p.beats.length,p.ids.length);assert(p.beats.every(n=>Number.isInteger(n)&&n>0&&n<=32));}
+  }
+  assert.equal(patterns.blues.ids.length,12);
+  assert.deepEqual(patterns.andalusian.ids,['9-minor','7-major','5-major','4-major']);
+});

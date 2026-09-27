@@ -5,22 +5,23 @@
   <meta name="description" content="Tu espacio para volver a la guitarra: notas, acordes y progresiones en un mástil interactivo.">
   <title>Entre cuerdas · Tu espacio de guitarra</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%232c6258'/%3E%3Cpath d='M11 12h18M11 20h18M11 28h18M16 8v24M24 8v24' stroke='%23d9eac4' stroke-width='2'/%3E%3Ccircle cx='24' cy='20' r='4' fill='%23f6d49a'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css"><script defer src="music.js"></script><script defer src="audio.js"></script><script defer src="app.js"></script>
+  <link rel="stylesheet" href="styles.css"><script defer src="music.js"></script><script defer src="progressions.js"></script><script defer src="audio.js"></script><script defer src="library.js"></script><script defer src="fretboard.js"></script><script defer src="app.js"></script>
 </head>
 <body>
   <aside class="sidebar">
     <a class="brand" href="#explorar" aria-label="Entre cuerdas, inicio"><span class="brand-mark">♮</span><span>entre<br>cuerdas<span class="brand-dot">.</span></span></a>
     <p class="nav-label">TU ESPACIO DE PRÁCTICA</p>
-    <nav aria-label="Secciones"><button data-view="explorar" class="nav-button active"><span>⌘</span> Explorar el mástil</button><button data-view="acordes" class="nav-button"><span>♬</span> Biblioteca de acordes</button><button data-view="progresiones" class="nav-button"><span>▤</span> Mis progresiones</button><button data-view="practicar" class="nav-button"><span>◎</span> Practicar notas</button></nav>
+    <nav aria-label="Secciones"><button data-view="explorar" class="nav-button active"><span>⌘</span> Explorar el mástil</button><button data-view="acordes" class="nav-button"><span>♬</span> Biblioteca de acordes</button><button data-view="progresiones" class="nav-button"><span>▤</span> Progresiones</button></nav>
     <div class="sidebar-note"><span class="small-symbol">✦</span><p>Un poco cada día.<br><strong>Vuelve a encontrar<br>tu ritmo.</strong></p><div class="tiny-strings"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
     <div class="tuning-status"><span class="status-dot"></span><span>Afinación estándar<br><strong>E · A · D · G · B · E</strong></span></div>
   </aside>
   <main>
     <header class="topbar"><span>EL PLACER DE VOLVER A TOCAR</span><div class="notation-control"><span>Notación</span><div class="segmented"><button data-notation="latin" class="selected">Do Re Mi</button><button data-notation="english">C D E</button></div></div></header>
     <div class="page-heading"><div><p class="eyebrow" id="eyebrow">01 / EXPLORAR</p><h1 id="page-title">Conoce tu mástil<span>.</span></h1><p id="page-description">Reconecta con las notas. Toca una cuerda y escucha dónde estás.</p></div><span class="heading-badge">A tu ritmo <span>↗</span></span></div>
+    <section id="progression-library" aria-label="Biblioteca de progresiones" hidden></section>
     <section id="view-controls" class="controls-panel" aria-label="Controles de práctica"></section>
     <div class="workspace">
-      <section class="fretboard-panel card"><div class="panel-heading"><div><p class="eyebrow">TU GUITARRA, NOTA A NOTA</p><h2 id="board-title">El mapa del mástil</h2></div><div class="board-actions"><label for="fret-count" class="sr-only">Número de trastes</label><select id="fret-count"><option value="12">12 trastes</option><option value="15">15 trastes</option></select></div></div><div class="board-scroll"><div id="fretboard" class="fretboard" aria-label="Mástil interactivo"></div></div><div class="board-footer"><div class="legend"><span><i class="key-root"></i> Tónica</span><span><i class="key-note"></i> Nota</span><span class="chord-legend">○ Al aire · × No tocar</span></div><span id="board-hint">1.ª cuerda arriba · 6.ª cuerda abajo</span></div></section>
+      <section class="fretboard-panel card"><div class="panel-heading"><div><p class="eyebrow">TU GUITARRA, NOTA A NOTA</p><h2 id="board-title">El mapa del mástil</h2></div><div class="board-actions"><label for="fret-count" class="sr-only">Número de trastes</label><select id="fret-count"><option value="12">12 trastes</option><option value="15">15 trastes</option><option value="24">24 trastes</option></select></div></div><div class="board-scroll"><div id="fretboard" class="fretboard" aria-label="Mástil interactivo"></div></div><div class="board-footer"><div class="legend"><span><i class="key-root"></i> Tónica</span><span><i class="key-note"></i> Nota</span><span class="chord-legend">○ Al aire · × No tocar</span></div><span id="board-hint">1.ª cuerda arriba · 6.ª cuerda abajo</span></div></section>
       <aside id="detail-panel" class="detail-panel card" aria-live="polite"></aside>
     </div>
     <section id="lower-panel"></section>
