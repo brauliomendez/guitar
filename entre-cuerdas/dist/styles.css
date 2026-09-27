@@ -45,3 +45,14 @@
 .step-capo{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);margin-top:12px}.step .step-capo select{font-size:12px;font-weight:400;padding:4px;width:108px;min-width:0;background:#fff9}.sounding-step{font-size:12px;color:#735586;margin:6px 0 0}.step{width:210px;min-width:210px}.step-order{margin-top:7px}
 @media(max-width:1250px){.progression-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.progression-card{min-height:113px;padding:15px}.progression-story{gap:22px;padding:22px}.song-examples{padding-left:22px}}
 @media(max-width:720px){.library-heading{align-items:start}.library-heading h2{font-size:20px}.library-count{display:none}.progression-grid{gap:9px}.progression-card{padding:13px}.progression-card strong{font-size:14px}.progression-formula{font-size:12px}.progression-card-top{font-size:12px}.progression-story{grid-template-columns:1fr;padding:20px;gap:23px}.song-examples{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:20px}.capo-summary{grid-column:1/-1}.chord-detail .diagram{grid-row:1/5}.step{width:200px;min-width:200px}.progression-toolbar .help-text{width:100%;order:3}}
+/* Front view of a right-handed guitar: bass strings above, nut at the right. */
+.board-scroll{direction:rtl}
+.fretboard{direction:ltr;grid-template-columns:repeat(var(--frets,12),minmax(44px,1fr)) 44px}
+.fret-cell{border-right:0;border-left:1px solid #cfceb9}
+.fret-cell.open{border-right:0;border-left:4px solid #b3b29a}
+.fret-cell.at-capo{border-right:0;border-left:5px solid #9880b4}
+.chord-picker{display:flex;align-items:center;gap:20px;padding:20px 23px;background:#edf2e7;border:1px solid #dce5d3;border-radius:16px;margin-top:24px}
+.chord-picker .field{flex-direction:row;align-items:center;gap:14px}.chord-picker .field>span{color:var(--ink);font-size:16px;font-weight:600}.chord-picker select{min-width:115px}.chord-picker p{color:var(--muted);font-size:14px}
+.song-search{margin-left:auto;flex-shrink:0;font-size:12px;color:var(--green);white-space:nowrap}
+@media(max-width:1250px){.song-reference{flex-wrap:wrap}.song-reference>span:nth-child(2){flex:1;min-width:140px}.song-search{width:100%;padding-left:45px}}
+@media(max-width:720px){.chord-picker{align-items:start;flex-direction:column;gap:10px;padding:16px}.chord-picker p{font-size:13px}}

@@ -7,12 +7,12 @@ Abre `dist/index.html` en tu navegador. También puedes iniciar una vista local 
 ## Uso
 
 - **Explorar el mástil:** pulsa cualquier posición para escucharla; filtra por nota o escala y elige entre Do/Re/Mi y C/D/E.
-- **Biblioteca de acordes:** 12 fundamentales y 7 tipos (84 acordes), diagramas de dedos, cejillas y escucha. El capotraste (trastes 1–9) mantiene la forma de los dedos y sube el sonido. El mástil y los diagramas muestran trastes reales. Puedes añadir el acorde a tu secuencia conservando su capotraste.
-- **Progresiones:** explora ocho patrones con explicaciones, grados y dos referencias de canciones por patrón. Seleccionar una tarjeta solo cambia el detalle; «Practicar esta progresión» carga el patrón simplificado en tu secuencia. Añade, elimina y reordena acordes. Cada uno tiene de 1 a 32 pulsos. El tempo (30–220 BPM) determina los segundos indicados junto a cada acorde. Incluye bucle, metrónomo y sonido de acordes independientes.
+- **Biblioteca de acordes:** 12 fundamentales y 7 tipos (84 acordes), diagramas de dedos, cejillas y escucha. Elige la nota base debajo del mástil y el tipo de acorde en su familia. El capotraste (trastes 1–9) mantiene la forma de los dedos y sube el sonido. El mástil y los diagramas muestran trastes reales. Puedes añadir el acorde a tu secuencia conservando su capotraste.
+- **Progresiones:** explora ocho patrones con explicaciones, grados y dos canciones por patrón con búsquedas de Google por título, artista y acordes. Seleccionar una tarjeta solo cambia el detalle; «Practicar esta progresión» carga el patrón simplificado en tu secuencia. Añade, elimina y reordena acordes. Cada uno tiene de 1 a 32 pulsos. El tempo (30–220 BPM) determina los segundos indicados junto a cada acorde. Incluye bucle, metrónomo y sonido de acordes independientes.
 
 La secuencia y los ajustes del reproductor se guardan en este navegador cuando el almacenamiento local está disponible. No se sincronizan entre dispositivos ni entre la dirección local y una dirección publicada. Cambiar de sección detiene el reproductor; cambiar de pestaña lo pausa. Puedes reproducir con la barra espaciadora cuando el foco no está en un control.
 
-Afinación estándar E2 A2 D3 G3 B3 E4. El mástil se muestra con la primera cuerda (Mi agudo) arriba; los diagramas de acordes, con la sexta cuerda a la izquierda. El sonido se sintetiza mediante Web Audio; no requiere micrófono ni archivos de audio. Do7 utiliza una posición habitual sin quinta. Las fuentes de Google son opcionales: sin conexión se usan las del sistema.
+Afinación estándar E2 A2 D3 G3 B3 E4. El mástil se muestra de frente para una guitarra diestra, con la sexta cuerda (Mi grave) arriba y la pala a la derecha; los diagramas de acordes, con la sexta cuerda a la izquierda. El sonido se sintetiza mediante Web Audio; no requiere micrófono ni archivos de audio. Do7 utiliza una posición habitual sin quinta. Las fuentes de Google son opcionales: sin conexión se usan las del sistema.
 
 ## Archivos
 

@@ -8,11 +8,11 @@ function renderBoard(){
   $('#board-title').textContent=isChord?`${Music.chordName(c,state.notation)} · ${Music.qualities[c.quality].label.toLowerCase()}`:state.scale==='all'?'El mapa del mástil':state.scale==='single'?`Encuentra ${note(state.root)}`:`${Music.scales[state.scale].label} de ${note(state.root)}`;
   document.querySelector('.chord-legend').style.display=isChord?'inline':'none';
   document.querySelector('.chord-legend').textContent=capo?'○ Al capo · × No tocar':'○ Al aire · × No tocar';
-  $('#board-hint').textContent=capo?`Capotraste en ${capo} · trastes reales`:'1.ª cuerda arriba · 6.ª cuerda abajo';
+  $('#board-hint').textContent=capo?`Capotraste en ${capo} · trastes reales`:'Vista frontal · 6.ª arriba · pala a la derecha';
   let html='';
-  for(let f=0;f<=frets;f++)html+=`<span class="fret-label ${capo&&f===capo?'capo-label':''}">${f===0?'AIRE':f}</span>`;
-  Music.tuning.forEach((midi,s)=>{
-    for(let f=0;f<=frets;f++){
+  for(let f=frets;f>=0;f--)html+=`<span class="fret-label ${capo&&f===capo?'capo-label':''}">${f===0?'AIRE':f}</span>`;
+  Music.tuning.map((midi,s)=>({midi,s})).reverse().forEach(({midi,s})=>{
+    for(let f=frets;f>=0;f--){
       const pc=(midi+f)%12,shapeFret=c?.frets[5-s],chordPosition=isChord&&shapeFret===f;
       const muted=isChord&&shapeFret===-1&&f===capo,blocked=f<capo;
       const allowed=Music.scales[state.scale].intervals.some(i=>(root+i)%12===pc);
@@ -22,7 +22,7 @@ function renderBoard(){
       html+=`<button class="fret-cell ${f===0?'open':''} ${muted?'muted-chord':''} ${blocked?'behind-capo':''} ${capo&&f===capo?'at-capo':''}" data-string="${s}" data-fret="${f}" aria-label="${accessible}" ${blocked?'disabled':''} style="--string-width:${1+s*.25}px"><span class="note-dot ${pc===root&&!muted?'root':''} ${hidden?'hidden-note':''}">${hidden?'':display}</span></button>`;
     }
   });
-  for(let f=0;f<=frets;f++)html+=`<span class="fret-marker">${[3,5,7,9,12,15,17,19,21,24].includes(f)?'<i></i>':''}${f===12||f===24?'<i></i>':''}</span>`;
+  for(let f=frets;f>=0;f--)html+=`<span class="fret-marker">${[3,5,7,9,12,15,17,19,21,24].includes(f)?'<i></i>':''}${f===12||f===24?'<i></i>':''}</span>`;
   board.innerHTML=html;
 }
 function diagram(c){
