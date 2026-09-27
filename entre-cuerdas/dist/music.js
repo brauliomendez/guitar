@@ -4,6 +4,7 @@ const latin=['Do','Do♯','Re','Re♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La
 const flatLatin=['Do','Re♭','Re','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'],flatEnglish=['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
 const tuning=[64,59,55,50,45,40];
 const qualities={
+dim:{label:'Disminuido',suffix:'dim',intervals:[0,3,6],degrees:[0,2,4],shape:[0,1,2,0,-1,-1],fingers:[0,1,2,0,0,0]},
 major:{label:'Mayor',suffix:'',intervals:[0,4,7],degrees:[0,2,4],shape:[0,2,2,1,0,0],fingers:[0,2,3,1,0,0]},
 minor:{label:'Menor',suffix:'m',intervals:[0,3,7],degrees:[0,2,4],shape:[0,2,2,0,0,0],fingers:[0,2,3,0,0,0]},
 '7':{label:'Séptima dominante',suffix:'7',intervals:[0,4,7,10],degrees:[0,2,4,6],shape:[0,2,0,1,0,0],fingers:[0,2,0,1,0,0]},
@@ -20,9 +21,9 @@ const rawOpen={
 function chord(root,quality){
 const q=qualities[quality],id=`${root}-${quality}`;if(!q||!Number.isInteger(root)||root<0||root>11)throw Error('Acorde no válido');
 let shape;const open=rawOpen[id];if(open)shape={frets:open[0],fingers:open[1],barre:id==='2-m7'?{fret:1,from:4,to:5}:null};
-else{const offset=(root-(q.base??4)+12)%12;const movable={major:[1,3,4,2,1,1],minor:[1,3,4,1,1,1],'7':[1,3,1,2,1,1],m7:[1,3,1,1,1,1],maj7:[1,4,2,3,1,1],sus2:[0,1,3,4,1,1],sus4:[1,2,3,4,1,1]};shape={frets:q.shape.map(f=>f<0?-1:f+offset),fingers:offset?movable[quality]:q.fingers,barre:offset?{fret:offset,from:quality==='sus2'?1:0,to:5}:null};}
+else{const offset=(root-(q.base??4)+12)%12;const movable={dim:[1,2,3,1,0,0],major:[1,3,4,2,1,1],minor:[1,3,4,1,1,1],'7':[1,3,1,2,1,1],m7:[1,3,1,1,1,1],maj7:[1,4,2,3,1,1],sus2:[0,1,3,4,1,1],sus4:[1,2,3,4,1,1]};shape={frets:q.shape.map(f=>f<0?-1:f+offset),fingers:offset?movable[quality]:q.fingers,barre:offset?{fret:offset,from:quality==='sus2'?1:0,to:quality==='dim'?3:5}:null};}
 return{id,root,quality,...shape,pcs:q.intervals.map(i=>(root+i)%12)};}
-function fromId(id){const m=/^(\d+)-(major|minor|7|m7|maj7|sus2|sus4)$/.exec(id);if(!m)throw Error('Acorde no válido');return chord(Number(m[1]),m[2]);}
+function fromId(id){const m=/^(\d+)-(major|minor|7|m7|maj7|sus2|sus4|dim)$/.exec(id);if(!m)throw Error('Acorde no válido');return chord(Number(m[1]),m[2]);}
 function withCapo(shape,capo=0){
   if(!Number.isInteger(capo)||capo<0||capo>9)throw Error('Capotraste no válido');
   return {...shape,capo,shapeRoot:shape.root,shapeId:shape.id,root:(shape.root+capo)%12,

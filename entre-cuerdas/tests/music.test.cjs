@@ -7,7 +7,7 @@ test('las seis cuerdas abiertas tienen las alturas de afinación estándar', () 
   assert.deepEqual(music.tuning.map(n => music.note(n % 12, 'english')), ['E', 'B', 'G', 'D', 'A', 'E']);
 });
 
-test('las 84 posiciones producen las notas que forman el acorde', () => {
+test('las 96 posiciones producen las notas que forman el acorde', () => {
   let count = 0;
   for (let root = 0; root < 12; root++) {
     for (const quality of Object.keys(music.qualities)) {
@@ -21,7 +21,7 @@ test('las 84 posiciones producen las notas que forman el acorde', () => {
       count++;
     }
   }
-  assert.equal(count, 84);
+  assert.equal(count, 96);
 });
 
 test('las posiciones iniciales de Do, Lam y Fa son correctas', () => {

@@ -1,0 +1,53 @@
+'use strict';
+function escapeHTML(text){return String(text).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function identifying(){return state.view==='acordes'&&state.chordMode==='identify';}
+function selectedPitches(){return state.picked.flatMap((f,s)=>f<0?[]:[Music.tuning[s]+f]);}
+function chordModeControls(){return `<div class="segmented mode-switch" aria-label="Modo de biblioteca"><button data-chord-mode="browse" aria-pressed="${state.chordMode==='browse'}" class="${state.chordMode==='browse'?'selected':''}">Explorar acordes</button><button data-chord-mode="identify" aria-pressed="${identifying()}" class="${identifying()?'selected':''}">Identificar acorde</button></div>`;}
+function renderIdentification(){
+  const pitches=selectedPitches(),matches=Theory.identify(pitches),pcs=[...new Set(pitches.map(n=>n%12))];
+  const panel=$('#detail-panel');panel.className='detail-panel card identify-detail';
+  panel.innerHTML=`<span class="detail-tag">${matches.length?'COINCIDENCIAS EXACTAS':'ESCUCHA Y DESCUBRE'}</span>${matches.length?matches.map((m,i)=>`<article class="match-result"><${i?'h3':'h2'}>${Theory.matchName(m,state.notation)}</${i?'h3':'h2'}><p>${m.label}${m.root!==m.bass?' · '+note(m.bass)+' en el bajo':''}</p>${m.id?`<button class="text-btn" data-match="${m.id}">Ver posición habitual ↗</button>`:''}</article>`).join(''):`<h2>${pcs.length<3?'¿Qué acorde es?':'Sin coincidencia exacta'}</h2><p class="detail-description">${pcs.length<3?'Marca al menos tres notas distintas en el mástil.':'Esta combinación no coincide con los acordes que reconoce el asistente. Puede ser un acorde incompleto o más complejo.'}</p>`}<div class="note-chips">${pcs.map(pc=>`<span class="chip">${note(pc)}</span>`).join('')}</div><button class="btn primary" id="listen-selection" ${pitches.length?'':'disabled'}>▷ Escuchar selección</button><button class="btn ghost" id="clear-selection" ${pitches.length?'':'disabled'}>Limpiar selección</button>`;
+}
+function identificationLower(){
+  return `<div class="section-header"><div><h2>Tu posición, cuerda a cuerda</h2><p>Una nota por cuerda. Pulsa de nuevo una posición para quitarla; las cuerdas sin marcar no suenan.</p></div></div><div class="selected-strings">${[5,4,3,2,1,0].map(s=>`<button data-clear-string="${s}" class="string-choice" ${state.picked[s]<0?'disabled':''}><small>${s+1}.ª cuerda</small><strong>${state.picked[s]<0?'×':note((Music.tuning[s]+state.picked[s])%12)}</strong><span>${state.picked[s]<0?'Sin tocar':state.picked[s]===0?'Al aire · quitar':'Traste '+state.picked[s]+' · quitar'}</span></button>`).join('')}</div><p class="feature-note">Reconoce tríadas mayores, menores, disminuidas y aumentadas; séptimas, sextas, sus2, sus4 y add9. Las notas repetidas cuentan una vez. Si hay varias lecturas posibles, aparecen todas. Seleccionas trastes reales, sin capotraste.</p>`;
+}
+function sequenceModeControls(){return `<div class="segmented mode-switch" aria-label="Modo de secuencia"><button data-sequence-mode="chords" aria-pressed="${state.sequenceMode==='chords'}" class="${state.sequenceMode==='chords'?'selected':''}">Por acordes</button><button data-sequence-mode="degrees" aria-pressed="${state.sequenceMode==='degrees'}" class="${state.sequenceMode==='degrees'?'selected':''}">Por grados</button></div>`;}
+function degreeComposer(){
+  if(state.sequenceMode!=='degrees')return '';
+  return `<section class="degree-composer" aria-label="Construir patrón por grados"><div class="degree-heading"><div><p class="eyebrow">EL PATRÓN LO PONES TÚ</p><h3>Una escala, muchas progresiones</h3></div><div class="degree-key"><label class="field"><span>Tonalidad</span><select id="degree-root">${rootOptions(state.degreeRoot)}</select></label><label class="field"><span>Escala</span><select id="degree-scale"><option value="major" ${state.degreeScale==='major'?'selected':''}>Mayor</option><option value="minor" ${state.degreeScale==='minor'?'selected':''}>Menor natural</option></select></label></div></div><p class="feature-note">Añade acordes propios de la escala con los botones o escribe tu patrón. Mayúsculas = mayor; minúsculas = menor; ° = disminuido. Los grados parten de las notas de la escala elegida.</p><div class="degree-palette">${Theory.diatonic[state.degreeScale].map(d=>{const c=Music.fromId(Theory.degree(d,state.degreeRoot,state.degreeScale).id);return `<button data-append-degree="${d}"><strong>${d}</strong><span>${Music.chordName(c,state.notation)}</span></button>`;}).join('')}</div><div class="pattern-row"><label class="field pattern-field"><span>Patrón de grados</span><input id="degree-pattern" maxlength="240" value="${escapeHTML(state.degreePattern)}" placeholder="Ej.: VI-I-iv" spellcheck="false" aria-describedby="pattern-help pattern-preview"></label><button class="btn ghost" id="clear-pattern">Borrar patrón</button><button class="btn primary" id="apply-pattern">Usar patrón en secuencia</button></div><p id="pattern-help" class="feature-note">Separa con guiones o espacios. También admite V7, ii7, Imaj7 y alteraciones como ♭VII. Al aplicar, sustituye la secuencia con 4 pulsos por acorde y sin capo.</p><p id="pattern-preview" class="pattern-preview" aria-live="polite"></p><p class="feature-note">Cambiar la tonalidad transporta los pasos que tienen grado y conserva sus duraciones. Los acordes libres permanecen como están.</p></section>`;
+}
+function updatePatternPreview(){
+  const preview=$('#pattern-preview');if(!preview)return;
+  try{const steps=Theory.pattern(state.degreePattern,state.degreeRoot,state.degreeScale);preview.textContent=steps.map(s=>`${s.degree} → ${Music.chordName(Music.fromId(s.id),state.notation)}`).join('  ·  ');preview.classList.remove('invalid');$('#apply-pattern').disabled=false;$('#degree-pattern').setAttribute('aria-invalid','false');}
+  catch(e){preview.textContent=e.message;preview.classList.add('invalid');$('#apply-pattern').disabled=true;$('#degree-pattern').setAttribute('aria-invalid','true');}
+}
+function stepChordControl(step,i){
+  if(state.sequenceMode!=='degrees')return `<label class="sr-only" for="step-${i}">Acorde ${i+1}</label><select id="step-${i}" data-step-chord="${i}">${chordOptions(step.id)}</select>`;
+  const degrees=[...new Set([...Theory.diatonic[state.degreeScale],...['I','II','III','IV','V','VI','VII'].flatMap(d=>[d,d.toLowerCase(),d.toLowerCase()+'°',d+'7',d.toLowerCase()+'7',d+'maj7']),...(step.degree?[step.degree]:[])])];
+  return `<label class="sr-only" for="degree-step-${i}">Grado ${i+1}</label><select id="degree-step-${i}" data-step-degree="${i}"><option value="" ${!step.degree?'selected':''} disabled>Acorde libre</option>${degrees.map(d=>`<option value="${escapeHTML(d)}" ${step.degree===d?'selected':''}>${escapeHTML(d)} · ${Music.chordName(Music.fromId(Theory.degree(d,state.degreeRoot,state.degreeScale).id),state.notation)}</option>`).join('')}</select><p class="resolved-chord">${Music.chordName(Music.fromId(step.id),state.notation)}${step.degree?'':' · sin grado asignado'}</p>`;
+}
+function restoreWorkshop(p){
+  if(Number.isInteger(p.degreeRoot)&&p.degreeRoot>=0&&p.degreeRoot<12)state.degreeRoot=p.degreeRoot;
+  if(['major','minor'].includes(p.degreeScale))state.degreeScale=p.degreeScale;
+  if(['chords','degrees'].includes(p.sequenceMode))state.sequenceMode=p.sequenceMode;
+  if(typeof p.degreePattern==='string')state.degreePattern=p.degreePattern.slice(0,240);
+  state.sequence=state.sequence.map(s=>{const clean={id:s.id,beats:s.beats,capo:s.capo??0};try{if(typeof s.degree==='string'&&!clean.capo){const d=Theory.degree(s.degree,state.degreeRoot,state.degreeScale);if(d.id===s.id)clean.degree=d.degree;}}catch{}return clean;});
+}
+document.addEventListener('click',async e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.chordMode){GuitarAudio.stop();state.chordMode=b.dataset.chordMode;render();}
+  if(b.dataset.sequenceMode){stop(false);state.sequenceMode=b.dataset.sequenceMode;save();renderProgression();}
+  if(b.dataset.match){state.chordId=b.dataset.match;state.capo=0;state.chordMode='browse';save();render();}
+  if(b.id==='clear-selection'){GuitarAudio.stop();state.picked.fill(-1);render();}
+  if(b.dataset.clearString!==undefined){state.picked[Number(b.dataset.clearString)]=-1;render();}
+  if(b.id==='listen-selection'){try{await GuitarAudio.ready();GuitarAudio.strum({frets:[...state.picked].reverse()});}catch{toast('No se pudo activar el audio.');}}
+  if(b.dataset.appendDegree){state.degreePattern=state.degreePattern.trim()?state.degreePattern.trim()+' - '+b.dataset.appendDegree:b.dataset.appendDegree;state.degreePattern=state.degreePattern.slice(0,240);$('#degree-pattern').value=state.degreePattern;updatePatternPreview();save();}
+  if(b.id==='clear-pattern'){state.degreePattern='';$('#degree-pattern').value='';updatePatternPreview();save();$('#degree-pattern').focus();}
+  if(b.id==='apply-pattern'){try{const steps=Theory.pattern(state.degreePattern,state.degreeRoot,state.degreeScale);editSequence(()=>{state.sequence=steps.map(s=>({...s,beats:4,capo:0}));state.active=0;});toast('Patrón listo para tocar');}catch(err){toast(err.message);}}
+});
+document.addEventListener('input',e=>{if(e.target.id==='degree-pattern'){state.degreePattern=e.target.value;updatePatternPreview();save();}});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.id==='degree-root'||t.id==='degree-scale')editSequence(()=>{if(t.id==='degree-root')state.degreeRoot=Number(t.value);else state.degreeScale=t.value;state.sequence.forEach(s=>{if(s.degree)s.id=Theory.degree(s.degree,state.degreeRoot,state.degreeScale).id;});});
+  if(t.dataset.stepDegree!==undefined)editSequence(()=>{const s=state.sequence[Number(t.dataset.stepDegree)],d=Theory.degree(t.value,state.degreeRoot,state.degreeScale);s.id=d.id;s.degree=d.degree;s.capo=0;});
+});

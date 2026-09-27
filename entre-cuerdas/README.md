@@ -7,8 +7,11 @@ Abre `dist/index.html` en tu navegador. También puedes iniciar una vista local 
 ## Uso
 
 - **Explorar el mástil:** pulsa cualquier posición para escucharla; filtra por nota o escala y elige entre Do/Re/Mi y C/D/E.
-- **Biblioteca de acordes:** 12 fundamentales y 7 tipos (84 acordes), diagramas de dedos, cejillas y escucha. Elige la nota base debajo del mástil y el tipo de acorde en su familia. El capotraste (trastes 1–9) mantiene la forma de los dedos y sube el sonido. El mástil y los diagramas muestran trastes reales. Puedes añadir el acorde a tu secuencia conservando su capotraste.
+- **Biblioteca de acordes:** 12 fundamentales y 8 tipos (96 acordes), diagramas de dedos, cejillas y escucha. Elige la nota base debajo del mástil y el tipo de acorde en su familia. El capotraste (trastes 1–9) mantiene la forma de los dedos y sube el sonido. El mástil y los diagramas muestran trastes reales. Puedes añadir el acorde a tu secuencia conservando su capotraste.
+- **Identificar acorde:** en la Biblioteca, cambia a «Identificar acorde» y marca una posición por cuerda. Vuelve a pulsarla para quitarla. Las cuerdas no seleccionadas quedan silenciadas. El panel muestra coincidencias exactas, inversiones según la nota más grave y lecturas alternativas. Reconoce tríadas, séptimas comunes, sextas, sus2/sus4 y add9; un acorde incompleto o más complejo puede no coincidir. Puedes escuchar la posición y abrir una forma habitual de los tipos de la biblioteca. Este modo usa trastes reales sin capotraste.
 - **Progresiones:** explora ocho patrones con explicaciones, grados y dos canciones por patrón con búsquedas de Google por título, artista y acordes. Seleccionar una tarjeta solo cambia el detalle; «Practicar esta progresión» carga el patrón simplificado en tu secuencia. Añade, elimina y reordena acordes. Cada uno tiene de 1 a 32 pulsos. El tempo (30–220 BPM) determina los segundos indicados junto a cada acorde. Incluye bucle, metrónomo y sonido de acordes independientes.
+
+- **Secuencia por grados:** elige «Por grados» en «Tu secuencia», una tonalidad y la escala mayor o menor natural. Pulsa los grados diatónicos para componer un borrador, o escribe `VI-I-iv`. En Do mayor esto produce La mayor, Do mayor y Fa menor: las mayúsculas indican mayor, las minúsculas menor y ° disminuido. La raíz de cada grado se calcula desde la escala seleccionada. Admite séptimas (`V7`, `ii7`, `Imaj7`), sus2/sus4 y alteraciones (`♭VII`, `#iv`). La vista previa no cambia la secuencia hasta pulsar «Usar patrón en secuencia», que la sustituye con cuatro pulsos por acorde y sin capo. Después puedes editar cada grado, duración y orden. Cambiar de tonalidad transporta los pasos con grado; los acordes libres quedan intactos. Cambiar manualmente un acorde o su capo en «Por acordes» lo convierte en libre.
 
 La secuencia y los ajustes del reproductor se guardan en este navegador cuando el almacenamiento local está disponible. No se sincronizan entre dispositivos ni entre la dirección local y una dirección publicada. Cambiar de sección detiene el reproductor; cambiar de pestaña lo pausa. Puedes reproducir con la barra espaciadora cuando el foco no está en un control.
 
@@ -17,6 +20,8 @@ Afinación estándar E2 A2 D3 G3 B3 E4. El mástil se muestra de frente para una
 ## Archivos
 
 - `dist/music.js`: notas, escalas, ortografía musical y posiciones.
+- `dist/theory.js`: identificación de acordes y conversión de grados.
+- `dist/workshop.js`: interfaz del identificador y constructor por grados.
 - `dist/audio.js`: síntesis de cuerda pulsada y metrónomo.
 - `dist/app.js`: estado, controles y secuenciador.
 - `dist/progressions.js`: catálogo de patrones y fuentes de canciones.
@@ -28,6 +33,6 @@ La integración WebMCP opcional permite configurar una progresión; se detecta a
 
 ## Comprobaciones y versiones
 
-Ejecuta `node --test tests/music.test.cjs` desde esta carpeta. Incluye las 84 posiciones, transposición con capotraste, nombres de escalas y validación del catálogo.
+Ejecuta `node --test tests/*.test.cjs` desde esta carpeta. Incluye las 96 posiciones, transposición con capotraste, nombres de escalas, validación del catálogo, identificación e inversiones, y grados diatónicos en las doce tonalidades.
 
 El repositorio Git está en la carpeta superior `Guitar`. La etiqueta `v1-inicial` conserva la primera versión anterior a esta iteración.
