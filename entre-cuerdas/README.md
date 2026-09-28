@@ -36,3 +36,7 @@ La integración WebMCP opcional permite configurar una progresión; se detecta a
 Ejecuta `node --test tests/*.test.cjs` desde esta carpeta. Incluye las 96 posiciones, transposición con capotraste, nombres de escalas, validación del catálogo, identificación e inversiones, y grados diatónicos en las doce tonalidades.
 
 El repositorio Git está en la carpeta superior `Guitar`. La etiqueta `v1-inicial` conserva la primera versión anterior a esta iteración.
+
+## Prueba visual: mástil clásico
+
+La rama `experiment/mastil-clasico` prueba un diapasón de madera oscura, trastes metálicos, cejuela clara y pala ranurada con clavijas. Usa CSS y SVG propios, sin dependencias 3D ni recursos de imágenes externos. Las tres cuerdas graves tienen acabado entorchado y las agudas, acabado de nailon. La separación de trastes sigue una progresión decreciente, limitada por el tamaño mínimo de los controles. En pantallas estrechas y vistas de 15/24 trastes se conserva el desplazamiento horizontal. Las notas, capotraste, identificación y reproducción utilizan los mismos controles y datos musicales.

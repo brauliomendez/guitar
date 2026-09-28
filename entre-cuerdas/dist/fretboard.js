@@ -4,6 +4,9 @@ function renderBoard(){
   const capo=c?.capo??0,root=c?.root??state.root,maxFret=picking?Math.max(0,...state.picked):c?Math.max(...c.frets):0;
   const frets=Math.max(state.frets,maxFret>15?24:maxFret>12?15:12);
   const board=$('#fretboard');board.style.setProperty('--frets',frets);
+  board.parentElement.style.minWidth=`${Math.max(800,frets*48+218)}px`;
+  // Frets narrow towards the body; minimum hit targets keep the study view usable.
+  board.style.gridTemplateColumns=Array.from({length:frets},(_,i)=>`minmax(38px,${Math.pow(2,(i-frets+1)/12).toFixed(3)}fr)`).join(' ')+' 44px';
   $('#fret-count').value=String(frets);
   $('#board-title').textContent=picking?'Dibuja un acorde':isChord?`${Music.chordName(c,state.notation)} · ${Music.qualities[c.quality].label.toLowerCase()}`:state.scale==='all'?'El mapa del mástil':state.scale==='single'?`Encuentra ${note(state.root)}`:`${Music.scales[state.scale].label} de ${note(state.root)}`;
   document.querySelector('.chord-legend').style.display=isChord?'inline':'none';
@@ -22,7 +25,7 @@ function renderBoard(){
       const hidden=picking?false:blocked||!(isChord?chordPosition||muted:allowed)||(!isChord&&state.hide);
       const display=muted?'×':boardName(pc);
       const accessible=blocked?`Cuerda ${s+1}, traste ${f}, detrás del capotraste`:state.hide&&!isChord&&!picking?`Cuerda ${s+1}, traste ${f}`:`${boardName(pc)}, cuerda ${s+1}, ${f===capo?capo?'al capotraste':'al aire':`traste ${f}`}${muted?', no tocar':''}`;
-      html+=`<button class="fret-cell ${f===0?'open':''} ${muted?'muted-chord':''} ${blocked?'behind-capo':''} ${capo&&f===capo?'at-capo':''}" data-string="${s}" data-fret="${f}" aria-label="${accessible}" ${picking?`aria-pressed="${picked}"`:""} ${blocked?'disabled':''} style="--string-width:${1+s*.25}px"><span class="note-dot ${(picking?picked:pc===root&&!muted)?'root':''} ${hidden?'hidden-note':''}">${hidden?'':display}</span></button>`;
+      html+=`<button class="fret-cell ${f===0?'open':''} ${muted?'muted-chord':''} ${blocked?'behind-capo':''} ${capo&&f===capo?'at-capo':''}" data-string="${s}" data-fret="${f}" aria-label="${accessible}" ${picking?`aria-pressed="${picked}"`:""} ${blocked?'disabled':''} style="--string-width:${[1.5,1.8,2.3,2.8,3.4,4][s]}px"><span class="note-dot ${(picking?picked:pc===root&&!muted)?'root':''} ${hidden?'hidden-note':''}">${hidden?'':display}</span></button>`;
     }
   });
   for(let f=frets;f>=0;f--)html+=`<span class="fret-marker">${[3,5,7,9,12,15,17,19,21,24].includes(f)?'<i></i>':''}${f===12||f===24?'<i></i>':''}</span>`;

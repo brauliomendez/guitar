@@ -1,0 +1,40 @@
+/* A front-facing classical neck. Notes stay native, keyboard-accessible buttons. */
+.fretboard-panel{background:linear-gradient(150deg,#fffefa,#f6f2e9);border-color:#e4ddd1}
+.board-scroll{padding:18px 24px 28px;scrollbar-color:#b6a58e #eee7da}
+.guitar-instrument{position:relative;direction:ltr;padding-right:174px;min-width:800px}
+.guitar-headstock{position:absolute;width:184px;height:300px;right:0;top:18px;pointer-events:none;filter:drop-shadow(0 12px 12px #3821141a)}
+.fretboard{--row-height:44px;min-width:0;grid-template-rows:36px repeat(6,var(--row-height)) 34px;overflow:visible}
+.fretboard:before{content:'';position:absolute;inset:36px 44px 34px 0;z-index:-1;pointer-events:none;border-radius:5px 0 0 5px;
+  background:repeating-linear-gradient(1deg,transparent 0 3px,#d4a7790b 4px,transparent 6px 13px),repeating-linear-gradient(179deg,#130c0900 0 8px,#100b0966 10px,#caa07b0d 11px,transparent 12px 29px),linear-gradient(0deg,#170f0b,#36251b 18%,#251c16 45%,#423024 80%,#23160f);
+  box-shadow:0 -3px 0 #6c4c32,0 -5px 0 #c19b69,0 4px 0 #8e6641,0 7px 0 #49301f,0 16px 20px #33221833,inset 0 12px 16px #0005,inset 0 -8px 14px #0006}
+.fret-label{font-variant-numeric:tabular-nums;color:#756552;font-size:11px;padding-top:1px}
+.fret-cell,.fret-cell.open{background:transparent;border:0;isolation:isolate;overflow:visible}
+.fret-cell:hover{background:#eee0bd12}
+.fret-cell:after{content:'';position:absolute;left:-2px;top:0;bottom:0;width:4px;background:linear-gradient(90deg,#6f685c,#e5e3d8 40%,#a9a69d 67%,#4a443d);box-shadow:2px 0 3px #0008;z-index:-2;pointer-events:none}
+.fret-cell.open:after{left:-4px;width:8px;background:linear-gradient(90deg,#b2a48d,#f6efd9 35%,#e5d9bd 70%,#a7987d);box-shadow:3px 0 4px #24190d55}
+.fret-cell:before{height:var(--string-width);left:-2px;right:-2px;z-index:-1;background:linear-gradient(0deg,#69665b,#eae7db 48%,#b5b1a1 75%,#6c6859);box-shadow:0 2px 2px #0009;pointer-events:none}
+.fret-cell[data-string="5"]:before,.fret-cell[data-string="4"]:before,.fret-cell[data-string="3"]:before{background:repeating-linear-gradient(105deg,#5f5c52 0 .7px,#d4d0c2 1px 1.8px,#9b988d 2px 2.5px);border-top:1px solid #e5dfcc88;border-bottom:1px solid #686357}
+.fret-cell[data-string="2"]:before,.fret-cell[data-string="1"]:before,.fret-cell[data-string="0"]:before{background:linear-gradient(0deg,#a7977b77,#fff9e4d9 45%,#e9dbbca6 65%,#90806b88);box-shadow:0 2px 2px #0007}
+.fret-cell .note-dot{width:31px;height:31px;background:#eee7d4;color:#393c2a;border:1px solid #fff8;box-shadow:0 2px 6px #0008;font-size:11px;font-weight:700}
+.fret-cell .note-dot.root{background:#dceabe;color:#254838;border:1px solid #ffffdf;box-shadow:0 0 0 3px #c9dfa322,0 2px 7px #0009}
+.fret-cell .note-dot.hidden-note{background:transparent;box-shadow:none;border-color:transparent;color:transparent}
+.fret-cell:hover .note-dot.hidden-note{background:#e4d4b330;box-shadow:0 0 0 1px #e8dab777}
+.fret-cell[aria-pressed="false"] .note-dot{background:#382a20;color:#e5d6bd;border:1px solid #79674e;box-shadow:0 1px 3px #0006;font-size:10px}
+.fret-cell[aria-pressed="false"]:hover .note-dot{background:#65523d;color:#fff4d8;border-color:#d3bf97}
+.fret-cell.open .note-dot:not(.root):not(.hidden-note){background:#f8f2e3;color:#5d4b35;border-color:#ccbea6}
+.fret-cell.muted-chord .note-dot{background:#47372b!important;color:#dbc7ab!important;border:1px solid #887159!important}
+.fret-cell.at-capo{background:#ad8acd15;border:0}
+.fret-cell.at-capo:after{width:11px;left:-6px;background:linear-gradient(90deg,#252527,#6c6570 25%,#aba1b0 40%,#49454b 65%,#1d1e20);box-shadow:3px 0 5px #000b;border-left:2px solid #b7a4be}
+.fret-cell.behind-capo{background:#130d0a4d;opacity:1}
+.fret-cell.behind-capo:before{opacity:.4}
+.fret-label.capo-label{color:#6e4f85}
+.fret-cell:focus-visible{outline:2px solid #e1bbff;outline-offset:-3px;z-index:2}
+.fret-cell:active{transform:none}
+.fret-cell.played .note-dot{box-shadow:0 0 0 5px #dceabe44,0 3px 8px #0009}
+.fret-cell.played:before{animation:string-vibration .12s ease-in-out 4 alternate}
+@keyframes string-vibration{from{transform:translateY(-1px)}to{transform:translateY(1px)}}
+.fret-marker{padding-top:12px}.fret-marker i{width:4px;height:4px;background:#9d896b;box-shadow:0 1px 0 #fff}
+.board-footer{background:#fffcf6;border-top-color:#e9e0d2;color:#706b5f}.key-root{background:#cdddaf;border:1px solid #94aa79}.key-note{background:#e4d8bc;border:1px solid #c4b597}
+.instrument-caption{display:flex;align-items:center;gap:10px;color:#8b7459;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;padding:0 25px 6px}.instrument-caption:before{content:'';width:24px;height:1px;background:#bfa17d}
+@media(max-width:1200px){.board-scroll{padding-left:18px;padding-right:18px}.guitar-instrument{min-width:800px;padding-right:154px}.guitar-headstock{width:164px}}
+@media(prefers-reduced-motion:reduce){.fret-cell.played:before{animation:none}}

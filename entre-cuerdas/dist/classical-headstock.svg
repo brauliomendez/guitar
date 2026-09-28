@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 230 300" preserveAspectRatio="none" fill="none">
+  <defs>
+    <linearGradient id="wood" x1="0" y1="0" x2="220" y2="300" gradientUnits="userSpaceOnUse"><stop stop-color="#4c2518"/><stop offset=".35" stop-color="#885033"/><stop offset=".6" stop-color="#62351f"/><stop offset="1" stop-color="#341c15"/></linearGradient>
+    <linearGradient id="edge"><stop stop-color="#d7ab73"/><stop offset=".5" stop-color="#754830"/><stop offset="1" stop-color="#241810"/></linearGradient>
+    <linearGradient id="ivory"><stop stop-color="#aaa08a"/><stop offset=".35" stop-color="#faf1d8"/><stop offset=".6" stop-color="#e1d4b5"/><stop offset="1" stop-color="#928673"/></linearGradient>
+    <linearGradient id="brass"><stop stop-color="#785e35"/><stop offset=".3" stop-color="#dac08b"/><stop offset=".55" stop-color="#90754a"/><stop offset=".8" stop-color="#eed6a5"/><stop offset="1" stop-color="#74542e"/></linearGradient>
+    <linearGradient id="silver" x2="0" y2="1"><stop stop-color="#716c60"/><stop offset=".4" stop-color="#faf5e5"/><stop offset="1" stop-color="#938874"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-20%" width="160%" height="150%"><feDropShadow dx="2" dy="7" stdDeviation="5" flood-color="#342419" flood-opacity=".3"/></filter>
+    <clipPath id="outline"><path d="M0 25L31 25Q44 25 53 16L192 16Q207 16 207 34L214 77L207 100L219 150L207 200L214 223L207 266Q207 284 192 284H53Q44 275 31 275H0Z"/></clipPath>
+    <g id="peg"><path d="M0 0V27" stroke="url(#brass)" stroke-width="7"/><rect x="-12" y="-10" width="24" height="17" rx="7" fill="url(#ivory)" stroke="#877c65"/><circle cy="24" r="9" fill="url(#brass)" stroke="#715330"/><circle cy="24" r="3" fill="#534531"/></g>
+    <g id="roller"><rect x="-7" y="0" width="14" height="55" rx="4" fill="url(#ivory)" stroke="#b1a185"/><path d="M-7 20H7M-7 24H7M-7 28H7M-7 32H7" stroke="#b9a988" stroke-width="1.5"/></g>
+  </defs>
+  <g filter="url(#shadow)">
+    <path d="M0 25L31 25Q44 25 53 16L192 16Q207 16 207 34L214 77L207 100L219 150L207 200L214 223L207 266Q207 284 192 284H53Q44 275 31 275H0Z" fill="url(#wood)" stroke="url(#edge)" stroke-width="5"/>
+    <g clip-path="url(#outline)" opacity=".22" stroke="#d09c64">
+      <path d="M-10 42C60 56 140 29 230 45M-10 47C60 61 140 34 230 50M-10 112C50 85 122 130 230 101M-10 118C50 91 122 136 230 107M-10 178C70 159 130 188 230 171M-10 185C70 166 130 195 230 178M-10 248C55 230 122 266 230 243M-10 254C55 236 122 272 230 249"/>
+      <path d="M-10 139C90 116 120 153 230 140M-10 146C90 123 120 160 230 147M-10 150C90 127 120 164 230 151" stroke-width="2"/>
+    </g>
+    <rect x="58" y="57" width="135" height="57" rx="20" fill="#1f1712" stroke="#ad7950" stroke-width="3"/>
+    <rect x="58" y="186" width="135" height="57" rx="20" fill="#1f1712" stroke="#ad7950" stroke-width="3"/>
+    <path d="M73 109H177M73 238H177" stroke="#0d0b08" stroke-width="7" stroke-linecap="round"/>
+    <use href="#roller" transform="translate(78 58)"/><use href="#roller" transform="translate(124 58)"/><use href="#roller" transform="translate(170 58)"/>
+    <use href="#roller" transform="translate(78 187)"/><use href="#roller" transform="translate(124 187)"/><use href="#roller" transform="translate(170 187)"/>
+    <use href="#peg" transform="translate(78 13)"/><use href="#peg" transform="translate(124 13)"/><use href="#peg" transform="translate(170 13)"/>
+    <use href="#peg" transform="translate(78 287) rotate(180)"/><use href="#peg" transform="translate(124 287) rotate(180)"/><use href="#peg" transform="translate(170 287) rotate(180)"/>
+    <g stroke="url(#silver)" stroke-width="2.4"><path d="M0 40L78 83"/><path d="M0 84L124 84"/><path d="M0 128L170 86"/></g>
+    <g stroke="#e4dcc6" stroke-opacity=".8" stroke-width="1.7"><path d="M0 172L170 214"/><path d="M0 216L124 216"/><path d="M0 260L78 217"/></g>
+    <path d="M127 137L140 150L127 163L114 150Z" fill="#d6b990" opacity=".75"/><path d="M127 141V159M118 150H136" stroke="#69432b"/>
+  </g>
+</svg>
