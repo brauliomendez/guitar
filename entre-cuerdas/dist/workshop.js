@@ -3,6 +3,17 @@ function escapeHTML(text){return String(text).replace(/[&<>"']/g,c=>({'&':'&amp;
 function identifying(){return state.view==='acordes'&&state.chordMode==='identify';}
 function selectedPitches(){return state.picked.flatMap((f,s)=>f<0?[]:[Music.tuning[s]+f]);}
 function chordModeControls(){return `<div class="segmented mode-switch" aria-label="Modo de biblioteca"><button data-chord-mode="browse" aria-pressed="${state.chordMode==='browse'}" class="${state.chordMode==='browse'?'selected':''}">Explorar acordes</button><button data-chord-mode="identify" aria-pressed="${identifying()}" class="${identifying()?'selected':''}">Identificar acorde</button></div>`;}
+function capoAlternativesPanel(){
+  const sounding=currentChord(),name=Music.chordName(sounding,state.notation);
+  const current=Music.fromId(state.chordId),effort=Theory.shapeEffort(current);
+  const alternatives=Theory.capoAlternatives(sounding.root,sounding.quality).filter(a=>a.capo!==state.capo);
+  const features=a=>`${a.barre?'Con cejilla de índice':'Sin cejilla de índice'} · ${a.fingers} ${a.fingers===1?'dedo':'dedos'}`;
+  const card=(a,i)=>{
+    const shapeName=Music.chordName(a.shape,state.notation),better=effort.barre&&!a.barre||effort.barre===a.barre&&a.fingers<effort.fingers;
+    return `<article class="capo-option"><div class="capo-option-top"><span class="capo-position">${a.capo?'Capo en '+a.capo:'Sin capotraste'}</span>${better?'<span class="capo-benefit">'+(effort.barre&&!a.barre?'Evita la cejilla':'Menos dedos')+'</span>':''}</div><p class="capo-shape-label">TOCA LA FORMA DE</p><div class="capo-equation"><strong>${shapeName}</strong><span>→ suena <b>${name}</b></span></div><p class="capo-features">${features(a)}</p><div class="capo-option-actions"><button class="btn ${i===0?'primary':'soft'}" data-capo-shape="${a.shape.id}" data-capo-position="${a.capo}" aria-label="Usar forma de ${shapeName} ${a.capo?'con capo en '+a.capo:'sin capotraste'}">Usar esta forma</button><button class="btn ghost" data-listen-shape="${a.shape.id}" data-capo-position="${a.capo}" aria-label="Escuchar forma de ${shapeName} ${a.capo?'con capo en '+a.capo:'sin capotraste'}">▷ Escuchar</button></div></article>`;
+  };
+  return `<section class="capo-alternatives" aria-label="Alternativas con capotraste"><div class="capo-alternatives-heading"><div><p class="eyebrow">MISMO ACORDE, OTRA DIGITACIÓN</p><h2 id="capo-alternatives-title" tabindex="-1">Otras formas de tocar ${name}</h2><p>El capotraste sube el tono. Usamos otra forma para compensar esa subida y que siga sonando ${name}.</p></div><div class="current-shape"><span>Tu posición actual</span><strong>${Music.chordName(current,state.notation)} ${state.capo?' + capo '+state.capo:' · sin capo'}</strong><small>${features(effort)}</small></div></div><div class="capo-options">${alternatives.slice(0,3).map(card).join('')}</div><details class="more-capo-options"><summary>Ver las otras ${alternatives.length-3} alternativas</summary><div class="capo-options">${alternatives.slice(3).map((a,i)=>card(a,i+3)).join('')}</div></details><p class="feature-note">Orden orientativo: priorizamos evitar la cejilla, usar menos dedos y colocar el capo más cerca de la cejuela. La comodidad depende de tu mano. Se conserva el acorde; puede cambiar el registro y la distribución de sus notas.</p><p class="capo-song-note"><strong>Para una canción:</strong> el capotraste afecta a todas las cuerdas. Mantén el mismo traste para toda la progresión y adapta las formas de todos sus acordes.</p></section>`;
+}
 function renderIdentification(){
   const pitches=selectedPitches(),matches=Theory.identify(pitches),pcs=[...new Set(pitches.map(n=>n%12))];
   const panel=$('#detail-panel');panel.className='detail-panel card identify-detail';
@@ -35,6 +46,9 @@ function restoreWorkshop(p){
 }
 document.addEventListener('click',async e=>{
   const b=e.target.closest('button');if(!b)return;
+  if(b.id==='find-capo-options'){$('.capo-alternatives').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});$('#capo-alternatives-title').focus({preventScroll:true});return;}
+  if(b.dataset.capoShape){GuitarAudio.stop();state.chordId=b.dataset.capoShape;state.capo=Number(b.dataset.capoPosition);save();render();$('.workspace').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});toast('Mismo acorde, nueva forma de tocarlo');return;}
+  if(b.dataset.listenShape){try{const chord=Music.withCapo(Music.fromId(b.dataset.listenShape),Number(b.dataset.capoPosition));await GuitarAudio.ready();GuitarAudio.stop();GuitarAudio.strum(chord);}catch{toast('No se pudo activar el audio.');}return;}
   if(b.dataset.chordMode){GuitarAudio.stop();state.chordMode=b.dataset.chordMode;render();}
   if(b.dataset.sequenceMode){stop(false);state.sequenceMode=b.dataset.sequenceMode;save();renderProgression();}
   if(b.dataset.match){state.chordId=b.dataset.match;state.capo=0;state.chordMode='browse';save();render();}

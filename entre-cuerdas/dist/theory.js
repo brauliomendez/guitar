@@ -43,6 +43,21 @@ const Theory = (() => {
   function matchName(c,notation) {
     return music.note(c.root,notation,[3,8,10].includes(c.root))+c.suffix+(c.bass===c.root?'':'/'+music.note(c.bass,notation,[3,8,10].includes(c.bass)));
   }
-  return {degree,pattern,diatonic,identify,matchName};
+  function shapeEffort(shape) {
+    const pressed=shape.frets.filter(f=>f>0);
+    const fingers=new Set(shape.fingers.filter((finger,i)=>finger>0&&shape.frets[i]>0)).size;
+    const stretch=pressed.length?Math.max(...pressed)-Math.min(...pressed):0;
+    return {barre:!!shape.barre,fingers,stretch};
+  }
+  function capoAlternatives(root,quality) {
+    music.chord(root,quality); // Validate the sounding chord before transposing backwards.
+    return Array.from({length:10},(_,capo)=>{
+      const shape=music.chord((root-capo+12)%12,quality),effort=shapeEffort(shape);
+      // An approximate ordering: avoid index barres, then balance fingers and capo height.
+      const score=Number(effort.barre)*100+effort.fingers*4+effort.stretch+capo*1.5;
+      return {shape,capo,...effort,score};
+    }).sort((a,b)=>a.score-b.score||a.capo-b.capo);
+  }
+  return {degree,pattern,diatonic,identify,matchName,shapeEffort,capoAlternatives};
 })();
 if(typeof module!=='undefined')module.exports=Theory;

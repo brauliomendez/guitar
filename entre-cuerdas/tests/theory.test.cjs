@@ -43,3 +43,27 @@ test('todas las tríadas y séptimas completas de la biblioteca se reconocen',()
     assert(Theory.identify(c.pcs.map(pc=>48+pc)).some(m=>m.id===c.id),c.id);
   }
 });
+
+test('Fa mayor se simplifica como Mi con capo 1 y Si menor como La menor con capo 2',()=>{
+  const f=Theory.capoAlternatives(5,'major')[0];
+  assert.equal(f.shape.id,'4-major');assert.equal(f.capo,1);assert.equal(f.barre,false);
+  const bm=Theory.capoAlternatives(11,'minor')[0];
+  assert.equal(bm.shape.id,'9-minor');assert.equal(bm.capo,2);assert.equal(bm.barre,false);
+  assert.equal(Theory.shapeEffort(Music.chord(5,'major')).barre,true);
+  assert.equal(Theory.shapeEffort(Music.chord(4,'minor')).fingers,2);
+});
+
+test('las alternativas conservan fundamental, tipo y notas del acorde en todos los capos',()=>{
+  for(let root=0;root<12;root++)for(const quality of Object.keys(Music.qualities)){
+    const target=Music.chord(root,quality),options=Theory.capoAlternatives(root,quality);
+    assert.equal(options.length,10);assert.equal(new Set(options.map(o=>o.capo)).size,10);
+    for(const option of options){
+      const c=Music.withCapo(option.shape,option.capo);
+      assert.equal(c.root,root);assert.equal(c.quality,quality);
+      assert.deepEqual([...c.pcs].sort(),[...target.pcs].sort());
+      c.frets.forEach((f,s)=>{if(f>=0)assert(target.pcs.includes((Music.tuning[5-s]+f)%12));});
+    }
+    assert(options.every((o,i)=>!i||o.score>=options[i-1].score));
+  }
+  assert.throws(()=>Theory.capoAlternatives(12,'major'));
+});
