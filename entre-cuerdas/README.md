@@ -4,6 +4,31 @@ Asistente personal de guitarra en HTML, CSS y JavaScript, sin instalación ni co
 
 Abre `dist/index.html` en tu navegador. También puedes iniciar una vista local con `python -m http.server 4173 --bind 127.0.0.1 --directory dist` y visitar http://127.0.0.1:4173.
 
+## Despliegue en guitar.brauliomendez.com
+
+La aplicación es estática: Nginx sirve directamente `dist/`, sin Docker ni compilación.
+Desde la raíz del repositorio, `sudo ./deploy/deploy.sh` copia los archivos a
+`/var/www/guitar`. Después de actualizar el repositorio, repite ese comando.
+
+Las configuraciones de Nginx están en `deploy/nginx/`. La variante `guitar.http.conf`
+sirve para obtener el primer certificado; una vez emitido, instala
+`guitar.https.conf` como `/etc/nginx/sites-available/guitar.brauliomendez.com`,
+valida con `sudo nginx -t` y recarga con `sudo systemctl reload nginx`.
+El certificado se obtiene y renueva con Certbot usando el método webroot en
+`/var/www/guitar`. El registro A del subdominio debe apuntar al servidor.
+
+Para preparar un servidor nuevo, ejecuta desde la raíz del repositorio:
+
+```bash
+sudo ./deploy/deploy.sh
+sudo cp deploy/nginx/guitar.http.conf /etc/nginx/sites-available/guitar.brauliomendez.com
+sudo ln -s /etc/nginx/sites-available/guitar.brauliomendez.com /etc/nginx/sites-enabled/guitar.brauliomendez.com
+sudo nginx -t && sudo systemctl reload nginx
+sudo certbot certonly --webroot -w /var/www/guitar -d guitar.brauliomendez.com
+sudo cp deploy/nginx/guitar.https.conf /etc/nginx/sites-available/guitar.brauliomendez.com
+sudo nginx -t && sudo systemctl reload nginx
+```
+
 ## Uso
 
 - **Explorar el mástil:** pulsa cualquier posición para escucharla; filtra por nota o escala y elige entre Do/Re/Mi y C/D/E.
