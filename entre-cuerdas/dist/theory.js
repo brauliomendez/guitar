@@ -35,10 +35,14 @@ const Theory = (() => {
       dim7:{label:'Séptima disminuida',suffix:'dim7',intervals:[0,3,6,9]}};
     const bass = Math.min(...pitches) % 12, matches = [];
     for (let root=0;root<12;root++) for (const [quality,q] of Object.entries(templates)) {
-      if (pcs.length === q.intervals.length && q.intervals.every(i => pcs.includes((root+i)%12)))
-        matches.push({root,quality,bass,label:q.label,suffix:q.suffix,id:music.qualities[quality]?`${root}-${quality}`:null});
+      const missing = q.intervals.filter(i => !pcs.includes((root+i)%12));
+      // Common seventh voicings can omit the perfect fifth, but must retain
+      // root, third and seventh. Never ignore extra notes or an altered fifth.
+      const omittedFifth = ['7','m7','maj7'].includes(quality) && missing.length === 1 && missing[0] === 7;
+      if (pcs.every(pc => q.intervals.includes((pc-root+12)%12)) && (!missing.length || omittedFifth))
+        matches.push({root,quality,bass,label:q.label,suffix:q.suffix,omittedFifth,id:music.qualities[quality]?`${root}-${quality}`:null});
     }
-    return matches.sort((a,b) => Number(b.root===bass)-Number(a.root===bass));
+    return matches.sort((a,b) => Number(a.omittedFifth)-Number(b.omittedFifth) || Number(b.root===bass)-Number(a.root===bass));
   }
   function matchName(c,notation) {
     return music.note(c.root,notation,[3,8,10].includes(c.root))+c.suffix+(c.bass===c.root?'':'/'+music.note(c.bass,notation,[3,8,10].includes(c.bass)));

@@ -44,6 +44,42 @@ test('todas las tríadas y séptimas completas de la biblioteca se reconocen',()
   }
 });
 
+test('reconoce el Do7 abierto de la captura, sin Sol, y su inversión',()=>{
+  const c=Theory.identify([48,52,58,60,64])[0]; // x32310: Do Mi Si♭ Do Mi
+  assert.equal(c.id,'0-7');assert.equal(c.omittedFifth,true);
+  assert.equal(Theory.matchName(c,'latin'),'Do7');
+  const inversion=Theory.identify([52,58,60,64])[0];
+  assert.equal(Theory.matchName(inversion,'english'),'C7/E');
+  assert.equal(inversion.omittedFifth,true);
+});
+
+test('admite la quinta omitida en séptimas de las doce tonalidades, sin ignorar otras notas',()=>{
+  for(let root=0;root<12;root++)for(const quality of ['7','m7','maj7']){
+    const intervals=Music.qualities[quality].intervals;
+    const pitches=intervals.map(i=>48+root+i),id=`${root}-${quality}`;
+    const full=Theory.identify(pitches).find(m=>m.id===id);
+    assert(full);assert.equal(full.omittedFifth,false);
+    const shell=pitches.filter((_,i)=>intervals[i]!==7);
+    const match=Theory.identify(shell).find(m=>m.id===id);
+    assert(match,id);assert.equal(match.omittedFifth,true);
+    for(const essential of [0,intervals[1],intervals[3]]){
+      assert(!Theory.identify(pitches.filter(p=>p!==48+root+essential)).some(m=>m.id===id),`${id} sin ${essential}`);
+    }
+    assert(!Theory.identify([...shell,49+root]).some(m=>m.id===id),`${id} con nota ajena`);
+  }
+  for(const quality of ['dim','m7b5','dim7','aug']){
+    assert(!Theory.identify([48,51,57]).some(m=>m.root===0&&m.quality===quality));
+  }
+});
+
+test('se reconocen las 96 digitaciones reales de la biblioteca, también con capo',()=>{
+  for(let root=0;root<12;root++)for(const quality of Object.keys(Music.qualities))for(const capo of [0,1,5,9]){
+    const chord=Music.withCapo(Music.chord(root,quality),capo);
+    const pitches=chord.frets.flatMap((f,s)=>f<0?[]:[Music.tuning[5-s]+f]);
+    assert(Theory.identify(pitches).some(m=>m.root===chord.root&&m.quality===quality),`${root}-${quality} capo ${capo}`);
+  }
+});
+
 test('Fa mayor se simplifica como Mi con capo 1 y Si menor como La menor con capo 2',()=>{
   const f=Theory.capoAlternatives(5,'major')[0];
   assert.equal(f.shape.id,'4-major');assert.equal(f.capo,1);assert.equal(f.barre,false);
